@@ -1,17 +1,16 @@
 import cv2
-from picamera2 import Picamera2
+import os
 import time
-from time import sleep
+from picamera2 import Picamera2
 import numpy as np
 from fastiecm import fastiecm
 from pathlib import Path
 import RPi.GPIO as GPIO
-import os
 
-base_folder = Path(__file__).parent.resolve()
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+# Pin definitions
+led_pin = 17
+button_pin = 15
 
 REDVAL = 0.544
 REDINIT = int(REDVAL / (4 / 255))
@@ -22,6 +21,15 @@ AGINIT = int(AGAINVAL / (10 / 255))
 CONTRAST = 1.376
 CINIT = int(CONTRAST / (2 / 255))
 BRIGHT = 0.0
+BINIT = int(255 / 2)
+
+
+base_folder = Path(__file__).parent.resolve()
+# Use "GPIO" pin numbering
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+# Set LED pin as output
+GPIO.setup(led_pin, GPIO.OUT)
 
 
 def RedSetting(val):
@@ -43,6 +51,7 @@ def AnalogueGainSetting(val):
     AGainFloat = val * (10 / 255)
     AGAINVAL = AGainFloat
     print("Analogue Gain: ", AGainFloat)
+
 
 def ContrastSetting(val):
     global CONTRAST
@@ -88,6 +97,7 @@ def calc_ndvi(image):
     ndvi = (b.astype(float) - r) / bottom
     return ndvi
 
+
 # Colour map NDVI
 def color_map(image):
     color_mapped_prep = image.astype(np.uint8)
@@ -96,9 +106,11 @@ def color_map(image):
 
 
 if __name__ == "__main__":
+    # Setup camera
     picam2 = Picamera2()
     picam2.set_controls(
-        {"ExposureTime": 12000, "AnalogueGain": 1.2, "AwbEnable": 0, "AeEnable": 0})
+        {"ExposureTime": 12000, "AnalogueGain": 1.2, "AwbEnable": 0, "AeEnable": 0}
+    )
     picam2.preview_configuration.main.format = "XRGB8888"
     picam2.preview_configuration.main.size = (640, 360)
     picam2.preview_configuration.controls.FrameRate = 15
@@ -106,6 +118,7 @@ if __name__ == "__main__":
     picam2.start()
     time.sleep(2)
 
+    # Setup image frame with sliders to control camera inputs
     im = picam2.capture_array()
     ndvi_im = calc_ndvi(im)
     ndvi_contrast_im = contrast_stretch(ndvi_im)
@@ -113,9 +126,9 @@ if __name__ == "__main__":
     cv2.imshow("Camera", colour_map)
     cv2.createTrackbar("Red", "Camera", REDINIT, 255, RedSetting)
     cv2.createTrackbar("Blue", "Camera", BLUEINIT, 255, BlueSetting)
-    cv2.createTrackbar("AnalogueGain", "Camera", AGINIT, 255, AnalogueGainSetti>
+    cv2.createTrackbar("AnalogueGain", "Camera", AGINIT, 255, AnalogueGainSetting)
     cv2.createTrackbar("Contrast", "Camera", CINIT, 255, ContrastSetting)
-    cv2.createTrackbar("Brightness", "Camera", 0, 255, BrightnessSetting)
+    cv2.createTrackbar("Brightness", "Camera", BINIT, 255, BrightnessSetting)
 
     # Set up variables for the images folder and filenames
     images_folder = "images"
@@ -146,6 +159,8 @@ if __name__ == "__main__":
         if cv2.waitKey(1) == ord("q"):
             break
         if GPIO.input(15) == GPIO.LOW:
+            # Turn LED on
+            GPIO.output(led_pin, GPIO.HIGH)
             # Create the filename for the new image
             img_count += 1
             filename = f"{image_name_prefix}{img_count:03d}{image_ext}"
@@ -154,6 +169,8 @@ if __name__ == "__main__":
             # Save the image and print a message
             cv2.imwrite(output_path, colour_map)
             print(f"Captured {filename}")
-            sleep(1)  # add a short delay to prevent button bounce
+            time.sleep(1)  # add a short delay to prevent button bounce
+            GPIO.output(led_pin, GPIO.LOW)  # Turn LED off
     cv2.destroyAllWindows()
+    GPIO.cleanup()
     picam2.stop()
