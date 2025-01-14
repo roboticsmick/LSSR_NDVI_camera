@@ -1,73 +1,35 @@
-# LSSR_camera
+# YOLOV8 Autonomous ROBOGOAT
 
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-<a name="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
+Overview
+ROBOGOAT is an autonomous weeding robot developed as a final year mechatronics project at Queensland University of Technology. The robot is designed to navigate public footpaths while detecting and eliminating weeds using computer vision and targeted pesticide application.
+Key Features
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+Custom trained YOLOv8 object detection model for weed and path detection
+IR-filtered computer vision system using Raspberry Pi Global Shutter camera
+Targeted pesticide delivery system to minimize chemical usage
+Autonomous navigation using AI path detection
+Custom PCB design for power management and camera control
+Solar-powered operation for extended runtime
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://roboticsmick.pythonanywhere.com/">
-    <img src="https://roboticsmick.pythonanywhere.com/assets/LSRlogo.png" alt="Logo">
-  </a>
-  
-<!-- ABOUT THE PROJECT -->
-## About The Project
-NDVI camera using a Raspberry Pi, the Raspberry Pi GS lens and a #25 Roscolux filter.
+Technical Stack
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Vision System: Python, OpenCV, YOLOv8
+Hardware: Raspberry Pi 4, Arduino Mega, Custom PCB
+Computer Vision: NDVI (Normalized Difference Vegetation Index), IR filtering
+Control: C++ for motor and sprayer control
+Design: Fusion360 for chassis and components
 
-### Built With
+Results
 
-[![CPP][cpp]][cpp-url]
-[![pi]][pi-url]
-[![vsc]][vsc-url]
-[![plotly]][plotly-url]
-[![pythonanywhere]][pythonanywhere-url]
-[![patreon]][patreon-url]
+Path detection accuracy: >90%
+Weed detection accuracy: 49% overall, higher for weeds directly on paths
+Successfully implemented safety features including watchdog states
+Demonstrated reliable autonomous operation during field testing
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Project Purpose
+The project aims to address the challenges of footpath maintenance in urban areas, specifically:
 
-<!-- GETTING STARTED -->
-## Getting Started
-
-To come...
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-Please reach out if you have any suggestions or want to help make this system better. I'm a beginner and learning how to build this in my spare time so I'd love some help.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTACT -->
-## Contact
-
-* Michael Venz: [roboticsmick.pythonanywhere.com](https://roboticsmick.pythonanywhere.com/)
-* Github: [Github](https://github.com/roboticsmick/)
-* LinkedIn: [LinkedIn](https://www.linkedin.com/in/roboticsmick/)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+Reducing manual labor costs in weed management
+Minimizing human exposure to pesticides
+Preventing footpath damage from weed growth
+Reducing overall pesticide usage through targeted application
